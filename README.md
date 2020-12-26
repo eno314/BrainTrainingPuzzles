@@ -1,2 +1,3 @@
-# -
+# BrainTrainingPuzzles
+
 プログラマを育てる脳トレパズルの問題を解いてみた
