@@ -1,23 +1,23 @@
-from maru_batsu_game import init_board, print_board, validate_input, check_end, check_win
+from maru_batsu_game import Board, validate_input
 
 
 def main():
     turn = '○'
-    rows = init_board()
+    board = Board()
     while True:
-        print_board(rows)
+        board.print()
         r = validate_input(input('行番号(0 ~ 2) : '))
         c = validate_input(input('列番号(0 ~ 2) : '))
-        if rows[r][c] != '□':
+        if not board.can_set(r, c):
             print('この場所は埋まっています')
             continue
-        rows[r][c] = turn
+        board.set_turn(turn, r, c)
 
-        if check_win(rows, turn):
-            print_board(rows)
+        if board.check_win(turn):
+            board.print()
             print(turn + 'の勝ち')
             break
-        if check_end(rows):
+        if board.check_end():
             print('引き分け')
             break
 
