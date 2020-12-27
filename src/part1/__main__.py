@@ -1,4 +1,4 @@
-from maru_batsu_game import Board, Turn, validate_input
+from maru_batsu_game import Board, Input, Turn
 
 
 def main():
@@ -6,16 +6,17 @@ def main():
     board = Board()
     while True:
         board.print()
-        r = validate_input(input('行番号(0 ~ 2) : '))
-        c = validate_input(input('列番号(0 ~ 2) : '))
-        if not board.can_set(r, c):
+        input = Input.load()
+        if not input.is_valid():
+            print('入力値が不正です')
+            continue
+        if not board.can_set(input):
             print('この場所は埋まっています')
             continue
 
-        board.set_turn(r, c, turn)
+        board.set_turn(input, turn)
 
         if board.check_win(turn):
-            board.print()
             print('{}の勝ち'.format(turn))
             break
         if board.check_end():

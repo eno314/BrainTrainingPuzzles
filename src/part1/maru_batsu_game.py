@@ -1,6 +1,40 @@
 from dataclasses import dataclass
 
 
+@dataclass(frozen=True)
+class Input:
+
+    VALID_VALUES = ['0', '1', '2']
+
+    __row: str
+    __column: str
+
+    @property
+    def row(self):
+        return int(self.__row)
+
+    @property
+    def column(self):
+        return int(self.__column)
+
+    def is_valid(self) -> bool:
+        if (self.__row not in self.VALID_VALUES):
+            return False
+        if (self.__column not in self.VALID_VALUES):
+            return False
+        return True
+
+    @staticmethod
+    def load() -> 'Input':
+        r = input('行番号(0 ~ 2) : ')
+        c = input('列番号(0 ~ 2) : ')
+        return Input(r, c)
+
+    @staticmethod
+    def of(row: int, column: int) -> 'Input':
+        return Input(str(row), str(column))
+
+
 @dataclass
 class Turn:
 
@@ -29,11 +63,11 @@ class Board:
     def __init_board(self):
         self.__rows = [[self.EMPTY] * 3 for i in range(3)]
 
-    def can_set(self, row: int, column: int):
-        return self.__rows[row][column] == self.EMPTY
+    def can_set(self, input: Input):
+        return self.__rows[input.row][input.column] == self.EMPTY
 
-    def set_turn(self, row: int, column: int, turn: Turn):
-        self.__rows[row][column] = str(turn)
+    def set_turn(self, input: Input, turn: Turn):
+        self.__rows[input.row][input.column] = str(turn)
 
     def print(self):
         for i in range(3):
@@ -71,12 +105,6 @@ class Board:
     def check_end(self) -> bool:
         for r in range(3):
             for c in range(3):
-                if (self.can_set(r, c)):
+                if (self.can_set(Input.of(r, c))):
                     return False
         return True
-
-
-def validate_input(input: str) -> int:
-    if (input not in ['0', '1', '2']):
-        raise ValueError
-    return int(input)
