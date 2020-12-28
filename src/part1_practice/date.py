@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Birthday:
+class Date:
 
     __month: int
     __day: int
@@ -25,5 +25,5 @@ class Birthday:
         return True
 
     @staticmethod
-    def of(month: int, day: int) -> 'Birthday':
-        return Birthday(month, day)
+    def of(month: int, day: int) -> 'Date':
+        return Date(month, day)

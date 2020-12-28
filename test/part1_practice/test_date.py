@@ -1,8 +1,8 @@
 import pytest
-from src.part1_practice.birthday import Birthday
+from src.part1_practice.date import Date
 
 
-class TestBirthday:
+class TestDate:
 
     @pytest.mark.parametrize("month, day", [
         (1, 1),
@@ -13,8 +13,8 @@ class TestBirthday:
         """
         when valid date then return True
         """
-        birthday = Birthday.of(month, day)
-        assert birthday.is_valid()
+        date = Date.of(month, day)
+        assert date.is_valid()
 
     @pytest.mark.parametrize("month", [
         (0),
@@ -25,8 +25,8 @@ class TestBirthday:
         """
         then return False
         """
-        birthday = Birthday.of(month, 1)
-        assert not birthday.is_valid()
+        date = Date.of(month, 1)
+        assert not date.is_valid()
 
     @pytest.mark.parametrize("day", [
         (0),
@@ -37,8 +37,8 @@ class TestBirthday:
         """
         then return False
         """
-        birthday = Birthday.of(1, day)
-        assert not birthday.is_valid()
+        date = Date.of(1, day)
+        assert not date.is_valid()
 
     @pytest.mark.parametrize("month, day", [
         (2, 30),
@@ -51,5 +51,5 @@ class TestBirthday:
         """
         then return False
         """
-        birthday = Birthday.of(month, day)
-        assert not birthday.is_valid()
+        date = Date.of(month, day)
+        assert not date.is_valid()
