@@ -81,10 +81,7 @@ class MazeResolver:
 
     def depth_first(self) -> int:
         """
-        search mini move to go to goal by depth first search.
-        >>> maze_resolver = MazeResolver(maze)
-        >>> maze_resolver.depth_first()
-        11
+        search min move to go to goal by depth first search.
         """
         start_x, start_y = self.find_start()
         start_log = [[start_x, start_y]]
@@ -105,9 +102,33 @@ class MazeResolver:
                     # 過去に移動してない場所であれば移動して、再検索
                     log.append(next)
                     depth.append(self.__search_by_depth_first(log))
+                    print('log  : {}, depth : {}'.format(log, depth))
                     # 探索が終わったら戻る
                     log.pop(-1)
         return min(depth)
+
+    def breadth_first(self) -> int:
+        """
+        search min move to go to goal by breadth first search.
+        """
+        start_x, start_y = self.find_start()
+        log = [[start_x, start_y]]
+        queue = [[start_x, start_y, 0]]
+
+        while len(queue) > 0:
+            x, y, depth = queue.pop(0)
+            for move in self.DIRECTIONS:
+                next = [x + move[0], y + move[1]]
+                if self.__is_goal_position(next[0], next[1]):
+                    # ゴールしたら深さを返す
+                    return depth + 1
+                if self.__can_go_to(next[0], next[1]):
+                    if next not in log:
+                        # 過去に移動していない場所の場合に、ログとキューに追加
+                        log.append(next)
+                        queue.append([next[0], next[1], depth + 1])
+                        print('log : {}, queue: {}'.format(log, queue))
+        return -1
 
     def __can_go_to(self, x: int, y: int) -> bool:
         return self.__maze[x][y] != Point.W
