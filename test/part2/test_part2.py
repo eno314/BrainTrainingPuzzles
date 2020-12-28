@@ -1,7 +1,10 @@
-from src.part2.maze import random_ai
+from src.part2.maze import MazeResolver, maze
 
 
-class TestRandomAI:
+class TestMazeResolver:
 
-    def test_can_go_to_goal(self):
-        random_ai()
+    def test_can_go_to_goal_by_random(self):
+        MazeResolver(maze).random()
+
+    def test_can_go_to_goal_by_right_hand(self):
+        MazeResolver(maze).right_hand()
