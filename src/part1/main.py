@@ -1,4 +1,4 @@
-from maru_batsu_game import Board, Input, Turn
+from src.part1.maru_batsu_game import Board, Input, Turn
 
 
 def main():
