@@ -37,3 +37,8 @@ class TestConstellationSpecification:
         specification = ConstellationSpecification()
         actual = specification.find_by_birthday(birthday)
         assert actual == expected
+
+    def test_find_by_birthday_when_birthday_is_invalid(self):
+        specification = ConstellationSpecification()
+        with pytest.raises(ValueError):
+            specification.find_by_birthday(Date(0, 0))

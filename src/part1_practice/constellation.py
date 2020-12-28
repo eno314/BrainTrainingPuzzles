@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List
 
-from .date import Date
+from src.part1_practice.date import Date
 
 
 @dataclass(frozen=True)
