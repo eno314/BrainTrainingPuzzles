@@ -12,14 +12,22 @@ class Point(Enum):
 
 
 maze = [
-    [Point.W, Point.W, Point.W, Point.W, Point.W, Point.W, Point.W, Point.W, Point.W],
-    [Point.W, Point.S, Point.P, Point.P, Point.W, Point.W, Point.P, Point.W, Point.W],
-    [Point.W, Point.P, Point.W, Point.W, Point.P, Point.P, Point.P, Point.P, Point.W],
-    [Point.W, Point.P, Point.P, Point.P, Point.P, Point.W, Point.W, Point.W, Point.W],
-    [Point.W, Point.W, Point.P, Point.W, Point.P, Point.W, Point.P, Point.G, Point.W],
-    [Point.W, Point.P, Point.P, Point.W, Point.P, Point.P, Point.P, Point.W, Point.W],
-    [Point.W, Point.P, Point.W, Point.P, Point.P, Point.W, Point.P, Point.P, Point.W],
-    [Point.W, Point.W, Point.W, Point.W, Point.W, Point.W, Point.W, Point.W, Point.W],
+    [Point.W, Point.W, Point.W, Point.W, Point.W,
+        Point.W, Point.W, Point.W, Point.W],
+    [Point.W, Point.S, Point.P, Point.P, Point.W,
+        Point.W, Point.P, Point.W, Point.W],
+    [Point.W, Point.P, Point.W, Point.W, Point.P,
+        Point.P, Point.P, Point.P, Point.W],
+    [Point.W, Point.P, Point.P, Point.P, Point.P,
+        Point.W, Point.W, Point.W, Point.W],
+    [Point.W, Point.W, Point.P, Point.W, Point.P,
+        Point.W, Point.P, Point.G, Point.W],
+    [Point.W, Point.P, Point.P, Point.W, Point.P,
+        Point.P, Point.P, Point.W, Point.W],
+    [Point.W, Point.P, Point.W, Point.P, Point.P,
+        Point.W, Point.P, Point.P, Point.W],
+    [Point.W, Point.W, Point.W, Point.W, Point.W,
+        Point.W, Point.W, Point.W, Point.W],
 ]
 
 
@@ -41,9 +49,25 @@ class MazeResolver:
         >>> maze_resolver.find_start()
 
         """
+        return self.__find_point(Point.S)
+
+    def find_goal(self) -> Tuple[int, int]:
+        """return goal position of maze
+        >>> maze_resolver = MazeResolver(maze)
+        >>> maze_resolver.find_goal()
+        (4, 7)
+
+        if start is not found then return None
+        >>> maze_resolver = MazeResolver([])
+        >>> maze_resolver.find_goal()
+
+        """
+        return self.__find_point(Point.G)
+
+    def __find_point(self, point: Point) -> Tuple[int, int]:
         for i in range(len(self.__maze)):
             for j in range(len(self.__maze[i])):
-                if self.__maze[i][j] == Point.S:
+                if self.__maze[i][j] == point:
                     return (i, j)
         return None
 
@@ -128,7 +152,55 @@ class MazeResolver:
                         log.append(next)
                         queue.append([next[0], next[1], depth + 1])
                         print('log : {}, queue: {}'.format(log, queue))
+        # ゴールが見つからなかった
         return -1
+
+    def bidirection_search(self) -> int:
+        start_x, start_y = self.find_start()
+        log_fw, q_fw = [[start_x, start_y]], [[start_x, start_y]]
+        goal_x, goal_y = self.find_goal()
+        log_bw, q_bw = [[goal_x, goal_y]], [[goal_x, goal_y]]
+        depth = 0
+        while True:
+            # スタートからゴールに向けて1段進める
+            q_fw = self.__get_next(q_fw, log_fw)
+            depth += 1
+            print('q_fw : {}'.format(q_fw))
+            if self.__check_duplicate(q_fw, q_bw):
+                break
+
+            # ゴールからスタートに向けて1段進める
+            q_bw = self.__get_next(q_bw, log_bw)
+            depth += 1
+            print('q_bw : {}'.format(q_bw))
+            if self.__check_duplicate(q_fw, q_bw):
+                break
+        return depth
+
+    def __get_next(
+        self,
+        queue: List[List[int]],
+        log: List[List[int]]
+    ) -> List[List[int]]:
+        result = []
+        for x, y in queue:
+            for move in self.DIRECTIONS:
+                next = [x + move[0], y + move[1]]
+                if self.__can_go_to(next[0], next[1]):
+                    if next not in log:
+                        log.append(next)
+                        result.append(next)
+        return result
+
+    def __check_duplicate(
+        self,
+        fw: List[Tuple[int, int]],
+        bw: List[Tuple[int, int]]
+    ) -> bool:
+        for position in fw:
+            if position in bw:
+                return True
+        return False
 
     def __can_go_to(self, x: int, y: int) -> bool:
         return self.__maze[x][y] != Point.W

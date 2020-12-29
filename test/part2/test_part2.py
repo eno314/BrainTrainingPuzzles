@@ -14,3 +14,6 @@ class TestMazeResolver:
 
     def test_breadth_first_search(self):
         assert MazeResolver(maze).breadth_first() == 11
+
+    def test_bidirection_search(self):
+        assert MazeResolver(maze).bidirection_search() == 11
