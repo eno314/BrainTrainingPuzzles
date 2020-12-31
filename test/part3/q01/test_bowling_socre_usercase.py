@@ -71,3 +71,23 @@ def test_error_when_point_is_invalid_on_last(
 ):
     with pytest.raises(ValueError):
         usecase.calculate(all_points)
+
+
+@pytest.mark.parametrize('all_points, expected', [
+    ([[10], [10], [10], [10], [10], [10], [10], [10], [10], [10, 10, 10]], 300),
+    ([[10], [10], [10], [10], [10], [10], [10], [10], [10], [9, 1, 10]], 279),
+    (
+        [
+            [9, 1], [8, 2], [10], [5, 0], [3, 6],
+            [4, 2], [7, 3], [6, 3], [10], [9, 1, 9]
+        ],
+        137
+    ),
+])
+def test_with_hint(
+    usecase: BowlingScoreUsecase,
+    all_points: List[List[int]],
+    expected: int
+):
+    actual = usecase.calculate_with_hint(all_points)
+    assert actual == expected
